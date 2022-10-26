@@ -1,4 +1,4 @@
-using MultiArchApi.Controllers;
+using Public.Api.Controllers;
 
 var builder = WebApplication.CreateBuilder(args);
 

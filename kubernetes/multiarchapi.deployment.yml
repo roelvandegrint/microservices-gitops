@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multi-arch-api
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: multi-arch-api
+  template:
+    metadata:
+      name: multi-arch-api
+      labels:
+        app: multi-arch-api
+    spec:
+      containers:
+      - name: multi-arch-api
+        image: roelvandegrint.azurecr.io/multi-arch-api:21cba9abb742b1f5291cc434676ce1503e3bddbe
+        resources:
+          limits:
+            memory: 128Mi
+            cpu: 500m
+        env:
+        - name: LOGGING__LOGLEVEL__MICROSOFT.ASPNETCORE
+          value: Information
+        - name: BACKENDAPIBASEADDRESS
+          value: http://backend-api
+      imagePullSecrets:
+        - name: roelvandegrint.azurecr.io

@@ -4,34 +4,31 @@ name: Build
 on:
   # Automatically trigger it when detected changes in repo
   push:
-    branches: 
-      [ main ]
+    branches:
+      - main
+    paths:
+      - backend.API/**
 
-  # Allow mannually trigger 
+  # Allow mannually trigger
   workflow_dispatch:
 
 env:
   REGISTRY: roelvandegrint.azurecr.io
+  IMAGE_NAME: backend-api
+  DIRECTORY: backend.API
+  DOCKERFILE: backend.API/Dockerfile
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        services: [ 
-          { 'imageName': 'multi-arch-api', 'directory': 'client-facing', 'dockerFile': 'client-facing/Dockerfile' }
-          , { 'imageName': 'backend-api', 'directory': 'backend.API', 'dockerFile': 'backend.API/Dockerfile' }
-        ]
-    outputs:
-      containerImage-multi-arch-api: ${{ steps.image-tag.outputs.image-multi-arch-api }}
     steps:
       - name: Checkout to the branch
-        uses: actions/checkout@v2        
+        uses: actions/checkout@v2
 
       # https://github.com/docker/setup-qemu-action
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
-      
+
       # https://github.com/docker/setup-buildx-action
       - name: Set up Docker Buildx
         id: buildx
@@ -49,12 +46,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          tags: ${{ env.REGISTRY }}/${{ matrix.services.imageName }}:${{ github.sha }},${{ env.REGISTRY }}/${{ matrix.services.imageName }}:latest
-          file: ${{ matrix.services.dockerFile }}
-          context: ${{ matrix.services.directory }}
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }},${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          file: ${{ env.DOCKERFILE }}
+          context: ${{ env.DIRECTORY }}
           platforms: linux/amd64,linux/arm64
           push: true
-
-      - name: Output image tag
-        id: image-tag
-        run: echo "::set-output name=image-${{ matrix.services.imageName }}::${{ matrix.services.imageName }}:${{ github.sha }}"

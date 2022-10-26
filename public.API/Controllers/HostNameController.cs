@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MultiArchApi.Controllers;
+namespace Public.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]

@@ -1,4 +1,4 @@
-namespace MultiArchApi;
+namespace Public.Api;
 
 public class WeatherForecast
 {
