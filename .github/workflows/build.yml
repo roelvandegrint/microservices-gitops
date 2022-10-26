@@ -19,8 +19,8 @@ jobs:
     strategy:
       matrix:
         services: [ 
-          { 'imageName': 'multi-arch-api', 'directory': './client-facing', 'dockerFile': './Dockerfile' }
-          , { 'imageName': 'backend-api', 'directory': './backend.API', 'dockerFile': './Dockerfile' }
+          { 'imageName': 'multi-arch-api', 'directory': 'client-facing', 'dockerFile': 'client-facing/Dockerfile' }
+          , { 'imageName': 'backend-api', 'directory': 'backend.API', 'dockerFile': 'backend.API/Dockerfile' }
         ]
     outputs:
       containerImage-multi-arch-api: ${{ steps.image-tag.outputs.image-multi-arch-api }}
