@@ -1,4 +1,4 @@
-name: Build
+name: Backend API Build 
 
 # When this action will be executed
 on:
