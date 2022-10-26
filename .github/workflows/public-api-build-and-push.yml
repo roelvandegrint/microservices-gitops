@@ -15,8 +15,8 @@ on:
 env:
   REGISTRY: roelvandegrint.azurecr.io
   IMAGE_NAME: public-api
-  DIRECTORY: Public.API
-  DOCKERFILE: Public.API/Dockerfile
+  DIRECTORY: public.API
+  DOCKERFILE: public.API/Dockerfile
 
 jobs:
   build:
