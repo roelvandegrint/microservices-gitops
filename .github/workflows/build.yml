@@ -48,7 +48,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          tags: ${{ env.REGISTRY }}/${{ matrix.services.imageName }}:${{ github.sha }}
+          tags: ${{ env.REGISTRY }}/${{ matrix.services.imageName }}:${{ github.sha }},${{ env.REGISTRY }}/${{ matrix.services.imageName }}:latest
           file: ${{ matrix.services.dockerFile }}
           context: ${{ matrix.services.directory }}
           platforms: linux/amd64,linux/arm64
