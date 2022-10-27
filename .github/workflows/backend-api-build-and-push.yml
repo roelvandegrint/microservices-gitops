@@ -51,3 +51,20 @@ jobs:
           context: ${{ env.DIRECTORY }}
           platforms: linux/amd64,linux/arm64
           push: true
+
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          include: .github/workflows/backend-api-build-and-push.yml
+          find: "image:\\s*.*\n"
+          replace: "image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          regex: true
+
+      - name: Push changes
+        uses: ad-m/github-push-action@v0.6.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+
+# .github/workflows/backend-api-build-and-push.yml
+# image: roelvandegrint.azurecr.io/backend-api:8951af42b90f3e79f5db4b6ccb177ae122917059
