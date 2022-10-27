@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: multi-arch-api
-        image: roelvandegrint.azurecr.io/multi-arch-api:21cba9abb742b1f5291cc434676ce1503e3bddbe
+        image: roelvandegrint.azurecr.io/multi-arch-api:8951af42b90f3e79f5db4b6ccb177ae122917059
         resources:
           limits:
             memory: 128Mi
