@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: multi-arch-api
+  name: public-api
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: multi-arch-api
+      app: public-api
   template:
     metadata:
-      name: multi-arch-api
+      name: public-api
       labels:
-        app: multi-arch-api
+        app: public-api
     spec:
       containers:
-      - name: multi-arch-api
-        image: roelvandegrint.azurecr.io/multi-arch-api:7f570b22d6cb37a36aa1848032acff6f015200a3
+      - name: public-api
+        image: roelvandegrint.azurecr.io/public-api:7f570b22d6cb37a36aa1848032acff6f015200a3
         resources:
           limits:
             memory: 128Mi
