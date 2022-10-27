@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,9 @@ public class HostNameController : ControllerBase
     }
 
     [HttpGet]
+    public string GetHostName() => Dns.GetHostName();
+
+    [HttpGet("public")]
     public async Task<string> Get()
     {
         var baseUriString = _config.GetValue<string>("BackendApiBaseAddress");
