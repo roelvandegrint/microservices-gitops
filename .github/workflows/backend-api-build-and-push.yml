@@ -55,7 +55,7 @@ jobs:
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@v2
         with:
-          include: .github/workflows/backend-api-build-and-push.yml
+          include: kubernetes/backend-api.deployment.yml
           find: "image:\\s*.*\n"
           replace: "image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
           regex: true
