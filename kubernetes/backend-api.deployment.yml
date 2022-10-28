@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: backend-api
-        image: roelvandegrint.azurecr.io/backend-api:902e9f20b3254e303fa68c469f58f8b7e4eb7d16
+        image: roelvandegrint.azurecr.io/backend-api:9b3b7034d07fe02d2383d243541d62d5a4bb1ad6
         resources:
           limits:
             memory: 128Mi
