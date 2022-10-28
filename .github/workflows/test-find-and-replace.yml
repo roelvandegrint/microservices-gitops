@@ -16,8 +16,8 @@ jobs:
         uses: jacobtomlinson/gha-find-replace@v2
         with:
           include: kubernetes/backend-api.deployment.yml
-          find: "image"
-          replace: "TEST"
+          find: "image:\\s*.*\n"
+          replace: "ROEL"
           regex: true
 
       - run: cat kubernetes/backend-api.deployment.yml
