@@ -57,14 +57,13 @@ jobs:
         with:
           include: kubernetes/backend-api.deployment.yml
           find: "image:\\s*.*\n"
-          replace: "image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          replace: "image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}\n"
           regex: true
 
-      - name: Push changes
-        uses: ad-m/github-push-action@v0.6.0
+      - name: Commit and push
+        uses: EndBug/add-and-commit@v9
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-
-# .github/workflows/backend-api-build-and-push.yml
-# image: roelvandegrint.azurecr.io/backend-api:8951af42b90f3e79f5db4b6ccb177ae122917059
+          add: kubernetes/backend-api.deployment.yml
+          author_name: Roel van de Grint
+          author_email: roelvandegrint@gmail.com
+          message: Update image tag

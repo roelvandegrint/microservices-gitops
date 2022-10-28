@@ -51,3 +51,19 @@ jobs:
           context: ${{ env.DIRECTORY }}
           platforms: linux/amd64,linux/arm64
           push: true
+
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          include: kubernetes/public-api.deployment.yml
+          find: "image:\\s*.*\n"
+          replace: "image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}\n"
+          regex: true
+
+      - name: Commit and push
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: kubernetes/public-api.deployment.yml
+          author_name: Roel van de Grint
+          author_email: roelvandegrint@gmail.com
+          message: Update image tag
