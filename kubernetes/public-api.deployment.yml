@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: public-api
-        image: roelvandegrint.azurecr.io/public-api:1dce5ac573fdab03ed315b84541c75fea799a804
+        image: roelvandegrint.azurecr.io/public-api:b434e4f111ef70ac7b95c6a1f1bd8289663ae1e7
         resources:
           limits:
             memory: 128Mi
