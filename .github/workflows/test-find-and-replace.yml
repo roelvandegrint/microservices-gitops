@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+env:
+  REGISTRY: roelvandegrint.azurecr.io
+  IMAGE_NAME: backend-api
+
 jobs:
   build:
     runs-on: ubuntu-latest
