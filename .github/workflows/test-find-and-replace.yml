@@ -3,7 +3,9 @@ name: Test Find and Replace
 on:
   push:
     branches:
-      - main
+      - find-and-replace
+    paths:
+      - .github/workflows/test-find-and-replace.yml
 
 env:
   REGISTRY: roelvandegrint.azurecr.io
@@ -19,9 +21,18 @@ jobs:
       - name: Find and Replace
         uses: jacobtomlinson/gha-find-replace@v2
         with:
-          include: kubernetes/backend-api.deployment.yml
+          include: deployment.yml
           find: "image:\\s*.*\n"
           replace: "image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}\n"
           regex: true
 
       - run: cat kubernetes/backend-api.deployment.yml
+
+      - name: Commit and push
+        uses: EndBug/add-and-commit@v9
+        with:
+          add: deployment.yml
+          author_name: Roel van de Grint
+          author_email: roelvandegrint@gmail.com
+          message: Update image tag
+

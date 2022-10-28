@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-api
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend-api
+  template:
+    metadata:
+      name: backend-api
+      labels:
+        app: backend-api
+    spec:
+      containers:
+      - name: backend-api
+        image: roelvandegrint.azurecr.io/backend-api:8951af42b90f3e79f5db4b6ccb177ae122917059
+        resources:
+          limits:
+            memory: 128Mi
+            cpu: 500m
+        env:
+        - name: LOGGING__LOGLEVEL__MICROSOFT.ASPNETCORE
+          value: Information
+      imagePullSecrets:
+        - name: roelvandegrint.azurecr.io
