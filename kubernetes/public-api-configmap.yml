@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: public-api-configmap
+data:
+  logging__LogLevel__Microsoft_AspNetCore: Information
+  backendApiBaseAddress: http://backend-api

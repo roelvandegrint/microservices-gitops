@@ -21,8 +21,10 @@ spec:
           limits:
             memory: 128Mi
             cpu: 500m
-        env:
-        - name: LOGGING__LOGLEVEL__MICROSOFT.ASPNETCORE
-          value: Information
+        envFrom:
+          - configMapRef:
+              name: backend-api-configmap
+          - secretRef:
+              name: backend-api-database 
       imagePullSecrets:
         - name: roelvandegrint.azurecr.io

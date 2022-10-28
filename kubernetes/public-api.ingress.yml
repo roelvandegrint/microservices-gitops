@@ -10,9 +10,19 @@ spec:
     http:
       paths:
       - pathType: Prefix
-        path: "/"
+        path: '/'
         backend:
           service:
             name: public-api
-            port: 
+            port:
+              number: 80
+  - host: cf.backend
+    http:
+      paths:
+      - pathType: Prefix
+        path: '/'
+        backend:
+          service:
+            name: backend-api
+            port:
               number: 80
