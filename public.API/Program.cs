@@ -1,4 +1,4 @@
-using Public.Api.Controllers;
+using Public.API.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,16 +9,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IHostnameService, HostNameService>();
-var baseUri = builder.Configuration.GetValue<string>("BackendApiBaseAddress");
-builder.Services.AddHttpClient<HostNameService>(options =>
-{
-    options.BaseAddress = new Uri(baseUri);
-});
-builder.Services.AddHttpClient<HostNameController>(options =>
-{
-    options.BaseAddress = new Uri(baseUri);
-});
+builder.Services.AddOptions<DatabaseOptions>().Bind(builder.Configuration.GetSection(nameof(DatabaseOptions)));
+builder.Services.AddDbContext<EmployeeDbContext>();
 
 var app = builder.Build();
 

@@ -21,7 +21,8 @@
 			"extensions": [
 				"ms-dotnettools.csharp",
 				"cschleiden.vscode-github-actions",
-				"donjayamanne.githistory"
+				"donjayamanne.githistory",
+				"humao.rest-client"
 			]
 		}
 	},
