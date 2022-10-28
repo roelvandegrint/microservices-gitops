@@ -1,0 +1,18 @@
+name: Test Find and Replace
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Find and Replace
+        uses: jacobtomlinson/gha-find-replace@v2
+        with:
+          include: kubernetes/backend-api.deployment.yml
+          find: "image"
+          replace: "TEST"
+          regex: true
+
+      - run: cat kubernetes/backend-api.deployment.yml
