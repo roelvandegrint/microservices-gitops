@@ -25,7 +25,7 @@ spec:
         - configMapRef:
             name: public-api-configmap
         - secretRef:
-            name: public-api-secrets
+            name: public-api-database
         - secretRef:
             name: public-api-servicebus
       imagePullSecrets:
