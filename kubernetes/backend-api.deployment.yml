@@ -25,6 +25,6 @@ spec:
           - configMapRef:
               name: backend-api-configmap
           - secretRef:
-              name: backend-api-database 
+              name: backend-api-secrets 
       imagePullSecrets:
         - name: roelvandegrint.azurecr.io
