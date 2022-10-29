@@ -1,14 +1,15 @@
 using Microsoft.EntityFrameworkCore;
-using Backend.Api.Models;
 using Microsoft.Extensions.Options;
 using Backend.API.Persistence;
+using Backend.Api.Models;
 
 public class EmployeeDbContext : DbContext
 {
     private readonly string connectionString;
 
-    public EmployeeDbContext(IOptions<DatabaseOptions> databaseOptions)
+    public EmployeeDbContext(IOptions<DatabaseOptions> databaseOptions, ILogger<EmployeeDbContext> logger)
     {
+        logger.LogInformation($"Connectionstring: {databaseOptions.Value.ConnectionString}");
         connectionString = databaseOptions.Value.ConnectionString;
     }
 

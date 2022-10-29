@@ -1,4 +1,8 @@
+using Backend.Api.Configuration;
+using Backend.Api.Events.Consumers;
 using Backend.API.Persistence;
+using MassTransit;
+using Microservices.GitOps.MassTransit.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +15,26 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddOptions<DatabaseOptions>().Bind(builder.Configuration.GetSection(nameof(DatabaseOptions)));
 builder.Services.AddDbContext<EmployeeDbContext>();
+
+var massTransitOptions = builder.Configuration.GetSection(nameof(MassTransitOptions)).Get<MassTransitOptions>();
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<EmployeeCreatedEventConsumer>();
+
+    x.UsingAzureServiceBus((context, cfg) =>
+    {
+        cfg.Host(massTransitOptions.AzureServiceBusConnectionString);
+
+        cfg.Message<EmployeeCreatedEvent>(x => x.SetEntityName("employee-created-new"));
+
+        cfg.SubscriptionEndpoint<EmployeeCreatedEvent>("employee-created-consumer", e =>
+        {
+            e.ConfigureConsumer<EmployeeCreatedEventConsumer>(context);
+        });
+
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 var app = builder.Build();
 
