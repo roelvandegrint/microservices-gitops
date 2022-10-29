@@ -25,6 +25,8 @@ spec:
         - configMapRef:
             name: public-api-configmap
         - secretRef:
-            name: public-api-database
+            name: public-api-secrets
+        - secretRef:
+            name: public-api-servicebus
       imagePullSecrets:
         - name: roelvandegrint.azurecr.io
