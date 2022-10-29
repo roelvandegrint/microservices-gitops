@@ -1,7 +1,7 @@
 using MassTransit;
+using Microservices.GitOps.MassTransit.Events;
 using Microsoft.AspNetCore.Mvc;
 using Public.Api.Models;
-using Pulic.Api.Messages;
 
 namespace Public.Api.Controllers;
 
@@ -40,7 +40,7 @@ public class EmployeesController : ControllerBase
         await dbContext.SaveChangesAsync();
 
         // Sending the message out to the topic for the rest of the system to consume
-        await publishEndpoint.Publish(new EmployeeCreatedEvent(employeeToAdd));
+        await publishEndpoint.Publish(new EmployeeCreatedEvent { Employee = employeeToAdd });
 
         // Return Saved
         return Created("", employeeToAdd);

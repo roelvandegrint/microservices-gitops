@@ -1,7 +1,7 @@
 using MassTransit;
+using Microservices.GitOps.MassTransit.Events;
 using Public.Api.Configuration;
 using Public.API.Persistence;
-using Pulic.Api.Messages;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,8 +21,8 @@ builder.Services.AddMassTransit(x =>
     x.UsingAzureServiceBus((context, cfg) =>
     {
         cfg.Host(massTransitOptions.AzureServiceBusConnectionString);
-        
-        cfg.Message<EmployeeCreatedEvent>(t => t.SetEntityName("employee-created"));
+
+        cfg.Message<EmployeeCreatedEvent>(t => t.SetEntityName("employee-created-new"));
     });
 });
 
