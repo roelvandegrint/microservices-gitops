@@ -1,4 +1,7 @@
+using MassTransit;
+using Public.Api.Configuration;
 using Public.API.Persistence;
+using Pulic.Api.Messages;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +14,17 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddOptions<DatabaseOptions>().Bind(builder.Configuration.GetSection(nameof(DatabaseOptions)));
 builder.Services.AddDbContext<EmployeeDbContext>();
+
+var massTransitOptions = builder.Configuration.GetSection(nameof(MassTransitOptions)).Get<MassTransitOptions>();
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingAzureServiceBus((context, cfg) =>
+    {
+        cfg.Host(massTransitOptions.AzureServiceBusConnectionString);
+        
+        cfg.Message<EmployeeCreatedEvent>(t => t.SetEntityName("employee-created"));
+    });
+});
 
 var app = builder.Build();
 

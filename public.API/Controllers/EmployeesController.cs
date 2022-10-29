@@ -1,6 +1,7 @@
-using System.ComponentModel.DataAnnotations;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Public.Api.Models;
+using Pulic.Api.Messages;
 
 namespace Public.Api.Controllers;
 
@@ -9,10 +10,12 @@ namespace Public.Api.Controllers;
 public class EmployeesController : ControllerBase
 {
     private readonly EmployeeDbContext dbContext;
+    private readonly IPublishEndpoint publishEndpoint;
 
-    public EmployeesController(EmployeeDbContext dbContext)
+    public EmployeesController(EmployeeDbContext dbContext, IPublishEndpoint publishEndpoint)
     {
         this.dbContext = dbContext;
+        this.publishEndpoint = publishEndpoint;
     }
 
     [HttpGet]
@@ -22,7 +25,7 @@ public class EmployeesController : ControllerBase
     public ActionResult<Employee> GetEmployeeById(int id)
     {
         var employee = dbContext.Employees.Find(id);
-        if(employee is null) return NotFound();
+        if (employee is null) return NotFound();
         return employee;
     }
 
@@ -36,16 +39,10 @@ public class EmployeesController : ControllerBase
         await dbContext.Employees.AddAsync(employeeToAdd);
         await dbContext.SaveChangesAsync();
 
+        // Sending the message out to the topic for the rest of the system to consume
+        await publishEndpoint.Publish(new EmployeeCreatedEvent(employeeToAdd));
+
         // Return Saved
         return Created("", employeeToAdd);
     }
-}
-
-public record EmployeeDto
-{
-    [Required]
-    public string FirstName { get; init; } = null!;
-    public string? Prefix { get; init; }
-    [Required]
-    public string LastName { get; init; } = null!;
 }
