@@ -7,9 +7,8 @@ public class EmployeeDbContext : DbContext
 {
     private readonly string connectionString;
 
-    public EmployeeDbContext(IOptions<DatabaseOptions> databaseOptions, ILogger<EmployeeDbContext> logger)
+    public EmployeeDbContext(IOptions<DatabaseOptions> databaseOptions)
     {
-        logger.LogInformation($"Connectionstring: {databaseOptions.Value.ConnectionString}");
         connectionString = databaseOptions.Value.ConnectionString;
     }
 

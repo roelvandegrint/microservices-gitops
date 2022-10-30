@@ -20,17 +20,20 @@ var massTransitOptions = builder.Configuration.GetSection(nameof(MassTransitOpti
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<EmployeeCreatedEventConsumer>();
+    x.AddConsumer<EmployeeDeletedEventConsumer>();
 
     x.UsingAzureServiceBus((context, cfg) =>
     {
         cfg.Host(massTransitOptions.AzureServiceBusConnectionString);
 
-        cfg.Message<EmployeeCreatedEvent>(x => x.SetEntityName("employee-created-new"));
+        cfg.Message<EmployeeCreatedEvent>(x => x.SetEntityName("employee-created"));
+        cfg.Message<EmployeeDeletedEvent>(x => x.SetEntityName("employee-deleted"));
 
-        cfg.SubscriptionEndpoint<EmployeeCreatedEvent>("employee-created-consumer", e =>
-        {
-            e.ConfigureConsumer<EmployeeCreatedEventConsumer>(context);
-        });
+        cfg.SubscriptionEndpoint<EmployeeCreatedEvent>("backend-api-employee-created", e =>
+            e.ConfigureConsumer<EmployeeCreatedEventConsumer>(context));
+
+        cfg.SubscriptionEndpoint<EmployeeDeletedEvent>("backend-api-employee-deleted", e =>
+            e.ConfigureConsumer<EmployeeDeletedEventConsumer>(context));
 
         cfg.ConfigureEndpoints(context);
     });
