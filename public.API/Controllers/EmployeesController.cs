@@ -45,4 +45,18 @@ public class EmployeesController : ControllerBase
         // Return Saved
         return Created("", employeeToAdd);
     }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteEmployee(Guid id)
+    {
+        var employeeToDelete = dbContext.Employees.Find(id);
+        if (employeeToDelete is null) return NotFound();
+
+        dbContext.Employees.Remove(employeeToDelete);
+        await dbContext.SaveChangesAsync();
+
+        await publishEndpoint.Publish(new EmployeeDeletedEvent(id));
+
+        return Ok();
+    }
 }

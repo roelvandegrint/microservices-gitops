@@ -22,7 +22,8 @@ builder.Services.AddMassTransit(x =>
     {
         cfg.Host(massTransitOptions.AzureServiceBusConnectionString);
 
-        cfg.Message<EmployeeCreatedEvent>(t => t.SetEntityName("employee-created-new"));
+        cfg.Message<EmployeeCreatedEvent>(t => t.SetEntityName("employee-created"));
+        cfg.Message<EmployeeDeletedEvent>(t => t.SetEntityName("employee-deleted"));
     });
 });
 
