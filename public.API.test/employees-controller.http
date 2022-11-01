@@ -1,10 +1,13 @@
-GET http://127.0.0.1:5000/employees HTTP/1.1
+@domain = cf.local
+@port = 80
+
+GET http://{{domain}}:{{port}}/employees HTTP/1.1
 
 ###
-GET http://127.0.0.1:5000/employees/1 HTTP/1.1
+GET http://{{domain}}:{{{{port}}/employees/1 HTTP/1.1
 
 ###
-POST http://127.0.0.1:5000/employees HTTP/1.1
+POST http://{{domain}}:{{port}}/employees HTTP/1.1
 Content-Type: application/json
 
 {
@@ -12,3 +15,6 @@ Content-Type: application/json
     "prefix": "van de",
     "lastName": "Grint"
 }
+
+###
+DELETE http://{{domain}}:{{port}}/employees/611d5d5b-4baa-4581-b391-08dab8fac6a8 HTTP/1.1
