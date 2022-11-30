@@ -1,0 +1,21 @@
+name: Public API Build
+
+# When this action will be executed
+on:
+  # Allow mannually trigger
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger new Operation-Resource actions for Deployment
+        run: |
+          commitMsg=$(git log --format=%B -n 1 $ --pretty=oneline --abbrev-commit)
+          branchName="${GITHUB_REF##*/}"
+          echo "commitMsg: $commitMsg"
+          echo "branchName: $branchName"
+          curl -X POST https://api.github.com/repos/roelvandegrint/microservices-gitops-infrastructure/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u $ \
+          --data '{"event_type": "product", "client_payload": { "commitmsg": "'"$commitMsg"'", "baseRef":"'"$branchName"'" }}'
