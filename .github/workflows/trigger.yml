@@ -1,4 +1,4 @@
-name: Public API Build
+name: trigger test
 
 # When this action will be executed
 on:
