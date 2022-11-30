@@ -18,4 +18,5 @@ jobs:
           curl -X POST https://api.github.com/repos/roelvandegrint/microservices-gitops-infrastructure/dispatches \
           -H 'Accept: application/vnd.github.everest-preview+json' \
           -u "${{ secrets.MICROSERVICES_GITOPS_INFRASTRUCTURE_PAT }}" \
-          --data '{"event_type": "product", "client_payload": { "what": "coolness" }}'
+          --data '{ "event_type": "public-api-updated", "client_payload": { "tag": "${{ github.sha }}" }}'
+
