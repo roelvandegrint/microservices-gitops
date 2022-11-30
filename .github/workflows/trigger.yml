@@ -22,7 +22,7 @@ jobs:
 
       - name: Trigger new Operation-Resource actions for Deployment
         run: |
-          curl -X POST https://api.github.com/repos/roelvandegrint/microservices-gitops-infrastructure/actions/workflows/update-public-api-tag.yml/dispatches' \
+          curl -X POST https://api.github.com/repos/roelvandegrint/microservices-gitops-infrastructure/actions/workflows/update-public-api-tag.yml/dispatches \
           -H 'Accept: application/vnd.github.everest-preview+json' \
           -u "${{ secrets.MICROSERVICES_GITOPS_INFRASTRUCTURE_PAT }}" \
           --data '{ "event_type": "public-api-updated", "client_payload": { "tag": "${{ github.sha }}" }}'
