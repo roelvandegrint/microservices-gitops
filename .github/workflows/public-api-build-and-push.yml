@@ -52,18 +52,9 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
 
-      - name: Find and Replace
-        uses: jacobtomlinson/gha-find-replace@v2
-        with:
-          include: kubernetes/public-api.deployment.yml
-          find: "image:\\s*.*\n"
-          replace: "image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}\n"
-          regex: true
-
-      - name: Commit and push
-        uses: EndBug/add-and-commit@v9
-        with:
-          add: kubernetes/public-api.deployment.yml
-          author_name: Roel van de Grint
-          author_email: roelvandegrint@gmail.com
-          message: Update image tag
+      - name: Trigger new Operation-Resource actions for Deployment
+        run: |
+          curl -X POST https://api.github.com/repos/roelvandegrint/microservices-gitops-infrastructure/dispatches \
+          -H 'Accept: application/vnd.github.everest-preview+json' \
+          -u "${{ secrets.MICROSERVICES_GITOPS_INFRASTRUCTURE_PAT }}" \
+          --data '{ "event_type": "public-api-updated", "client_payload": { "tag": "${{ github.sha }}" }}'
