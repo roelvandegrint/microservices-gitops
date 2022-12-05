@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: backend-api-configmap
-data:
-  LOGGING__LOGLEVEL__MICROSOFT.ASPNETCORE: Information
