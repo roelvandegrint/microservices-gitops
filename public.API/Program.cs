@@ -1,7 +1,10 @@
 using MassTransit;
 using Microservices.GitOps.MassTransit.Events;
+using OpenTelemetry;
 using Public.Api.Configuration;
 using Public.API.Persistence;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +29,23 @@ builder.Services.AddMassTransit(x =>
         cfg.Message<EmployeeDeletedEvent>(t => t.SetEntityName("employee-deleted"));
     });
 });
+
+var serviceName = "Microservices.GitOps.Public.API";
+var serviceVersion = "0.1.0";
+
+builder.Services.AddOpenTelemetry()
+    .WithTracing(builder => builder
+        .AddConsoleExporter()
+        .AddSource(serviceName)
+        .AddOtlpExporter()
+        .SetResourceBuilder(
+            ResourceBuilder.CreateDefault()
+                .AddService(serviceName: serviceName, serviceVersion: serviceVersion))
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddSqlClientInstrumentation()
+    )
+    .StartWithHost();
 
 var app = builder.Build();
 
