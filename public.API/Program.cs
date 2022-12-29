@@ -56,7 +56,7 @@ builder.Services.AddOpenTelemetry()
         .AddConsoleExporter()
         .AddSource(serviceName)
         .AddOtlpExporter(o => {
-            o.Endpoint = new Uri("http://localhost:4317");
+            o.Endpoint = new Uri(builder.Configuration.GetValue<string>("Jaeger:GrpcEndpoint"));
             o.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
         })
         .SetResourceBuilder(
