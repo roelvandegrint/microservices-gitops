@@ -47,18 +47,17 @@ var serviceVersion = "0.1.0";
 
 builder.Services.AddOpenTelemetry()
     .WithTracing(b => b
-        .AddConsoleExporter()
         .AddSource(serviceName)
-        .AddOtlpExporter(o => {
-            o.Endpoint = new Uri(builder.Configuration.GetValue<string>("Jaeger:GrpcEndpoint"));
-            o.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
-        })
         .SetResourceBuilder(
             ResourceBuilder.CreateDefault()
                 .AddService(serviceName: serviceName, serviceVersion: serviceVersion))
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddSqlClientInstrumentation()
+        .AddOtlpExporter(o => {
+            o.Endpoint = new Uri(builder.Configuration.GetValue<string>("Jaeger:GrpcEndpoint"));
+            o.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+        })
     )
     .StartWithHost();
 
