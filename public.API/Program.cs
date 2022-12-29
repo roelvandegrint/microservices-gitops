@@ -1,11 +1,11 @@
 using MassTransit;
 using Microservices.GitOps.MassTransit.Events;
-using OpenTelemetry;
 using Public.Api.Configuration;
 using Public.API.Persistence;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using Public.Api.Services;
+using OpenTelemetry;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Resources;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,18 +53,17 @@ var serviceVersion = "0.1.0";
 
 builder.Services.AddOpenTelemetry()
     .WithTracing(b => b
-        .AddConsoleExporter()
         .AddSource(serviceName)
-        .AddOtlpExporter(o => {
-            o.Endpoint = new Uri(builder.Configuration.GetValue<string>("Jaeger:GrpcEndpoint"));
-            o.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
-        })
         .SetResourceBuilder(
             ResourceBuilder.CreateDefault()
                 .AddService(serviceName: serviceName, serviceVersion: serviceVersion))
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddSqlClientInstrumentation()
+        .AddOtlpExporter(o => {
+            o.Endpoint = new Uri(builder.Configuration.GetValue<string>("Jaeger:GrpcEndpoint"));
+            o.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+        })
     )
     .StartWithHost();
 
