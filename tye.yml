@@ -1,0 +1,54 @@
+name: myapplication
+services:
+- name: public-api
+  project: public.API/Public.API.csproj
+- name: backend-api
+  project: backend.API/Backend.API.csproj
+- name: jaeger
+  image: jaegertracing/all-in-one:1.40
+  env:
+    - name: COLLECTOR_ZIPKIN_HOST_PORT
+      value: 9411
+    - name: COLLECTOR_OTLP_ENABLED
+      value: true
+  bindings:
+    - name: one
+      port: 6831
+      containerPort: 6831
+      protocol: udp
+    - name: two
+      port: 6832
+      containerPort: 6831
+      protocol: udp
+    - name: three
+      port: 5778
+      containerPort: 5778
+      protocol: http
+    - name: four
+      port: 16686
+      containerPort: 16686
+      protocol: http
+    - name: five
+      port: 4317
+      containerPort: 4317
+      protocol: http
+    - name: six
+      port: 4318
+      containerPort: 4318
+      protocol: http
+    - name: seven
+      port: 14250
+      containerPort: 14250
+      protocol: http
+    - name: eight
+      port: 14268
+      containerPort: 14268
+      protocol: http
+    - name: nine
+      port: 14269
+      containerPort: 14269
+      protocol: http
+    - name: ten
+      port: 9411
+      containerPort: 9411
+      protocol: http

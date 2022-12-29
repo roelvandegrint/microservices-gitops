@@ -3,6 +3,9 @@ using Backend.Api.Events.Consumers;
 using Backend.API.Persistence;
 using MassTransit;
 using Microservices.GitOps.MassTransit.Events;
+using OpenTelemetry;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +41,25 @@ builder.Services.AddMassTransit(x =>
         cfg.ConfigureEndpoints(context);
     });
 });
+
+var serviceName = "Microservices.GitOps.Backend.API";
+var serviceVersion = "0.1.0";
+
+builder.Services.AddOpenTelemetry()
+    .WithTracing(b => b
+        .AddSource(serviceName)
+        .SetResourceBuilder(
+            ResourceBuilder.CreateDefault()
+                .AddService(serviceName: serviceName, serviceVersion: serviceVersion))
+        .AddAspNetCoreInstrumentation()
+        .AddHttpClientInstrumentation()
+        .AddSqlClientInstrumentation()
+        .AddOtlpExporter(o => {
+            o.Endpoint = new Uri(builder.Configuration.GetValue<string>("Jaeger:GrpcEndpoint"));
+            o.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+        })
+    )
+    .StartWithHost();
 
 var app = builder.Build();
 
