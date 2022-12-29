@@ -2,6 +2,7 @@ using MassTransit;
 using Microservices.GitOps.MassTransit.Events;
 using Microsoft.AspNetCore.Mvc;
 using Public.Api.Models;
+using Public.Api.Services;
 
 namespace Public.Api.Controllers;
 
@@ -11,21 +12,26 @@ public class EmployeesController : ControllerBase
 {
     private readonly EmployeeDbContext dbContext;
     private readonly IPublishEndpoint publishEndpoint;
+    private readonly IBackendClient backendClient;
 
-    public EmployeesController(EmployeeDbContext dbContext, IPublishEndpoint publishEndpoint)
+    public EmployeesController(EmployeeDbContext dbContext, IPublishEndpoint publishEndpoint, IBackendClient backendClient)
     {
         this.dbContext = dbContext;
         this.publishEndpoint = publishEndpoint;
+        this.backendClient = backendClient;
     }
 
     [HttpGet]
-    public IEnumerable<Employee> GetEmployees() => dbContext.Employees;
+    public async Task<IEnumerable<Employee>> GetEmployees() => await backendClient.GetEmployeesAsync();
 
     [HttpGet("{id}")]
-    public ActionResult<Employee> GetEmployeeById(int id)
+    public async Task<ActionResult<Employee>> GetEmployeeById(Guid id)
     {
-        var employee = dbContext.Employees.Find(id);
-        if (employee is null) return NotFound();
+        var employee = await backendClient.GetEmployeeByIdAsync(id);
+        if (employee is null)
+        {
+            return NotFound();
+        }
         return employee;
     }
 

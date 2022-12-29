@@ -46,10 +46,13 @@ var serviceName = "Microservices.GitOps.Backend.API";
 var serviceVersion = "0.1.0";
 
 builder.Services.AddOpenTelemetry()
-    .WithTracing(builder => builder
-        .AddConsoleExporter()
+    .WithTracing(b => b
+        // .AddConsoleExporter()
         .AddSource(serviceName)
-        .AddOtlpExporter()
+        .AddOtlpExporter(o => {
+            o.Endpoint = new Uri("http://localhost:4317");
+            o.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
+        })
         .SetResourceBuilder(
             ResourceBuilder.CreateDefault()
                 .AddService(serviceName: serviceName, serviceVersion: serviceVersion))

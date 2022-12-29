@@ -16,4 +16,14 @@ public class EmployeesController : ControllerBase
 
     [HttpGet]
     public IEnumerable<Employee> GetEmployees() => dbContext.Employees;
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Employee>> GetEmployeeById(Guid id)
+    {
+        var employee = await dbContext.Employees.FindAsync(id);
+
+        if (employee is null) return NotFound();
+
+        return employee;
+    }
 }
