@@ -1,7 +1,6 @@
 using MassTransit;
 using Microservices.GitOps.MassTransit.Events;
 using Public.Api.Configuration;
-using Public.API.Persistence;
 using Public.Api.Services;
 using OpenTelemetry;
 using OpenTelemetry.Trace;
@@ -16,8 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddOptions<DatabaseOptions>().Bind(builder.Configuration.GetSection(nameof(DatabaseOptions)));
-builder.Services.AddDbContext<EmployeeDbContext>();
+builder.Services.AddMongoDb(builder.Configuration);
 
 builder.Services.AddScoped<IBackendClient, BackendClient>();
 
@@ -44,6 +42,7 @@ builder.Services.AddMassTransit(x =>
         cfg.Host(massTransitOptions.AzureServiceBusConnectionString);
 
         cfg.Message<EmployeeCreatedEvent>(t => t.SetEntityName("employee-created"));
+        cfg.Message<EmployeeUpdatedEvent>(t => t.SetEntityName("employee-updated"));
         cfg.Message<EmployeeDeletedEvent>(t => t.SetEntityName("employee-deleted"));
     });
 });
@@ -60,7 +59,8 @@ builder.Services.AddOpenTelemetry()
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddSqlClientInstrumentation()
-        .AddOtlpExporter(o => {
+        .AddOtlpExporter(o =>
+        {
             o.Endpoint = new Uri(builder.Configuration.GetValue<string>("Jaeger:GrpcEndpoint"));
             o.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
         })

@@ -1,5 +1,6 @@
 using Backend.Api.Models;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Driver;
 
 namespace Backend.Api.Controllers;
 
@@ -7,22 +8,31 @@ namespace Backend.Api.Controllers;
 [Route("[controller]")]
 public class EmployeesController : ControllerBase
 {
-    private readonly EmployeeDbContext dbContext;
+    private readonly IMongoDatabase database;
 
-    public EmployeesController(EmployeeDbContext dbContext)
+    public EmployeesController(IMongoDatabase database)
     {
-        this.dbContext = dbContext;
+        this.database = database;
     }
 
     [HttpGet]
-    public IEnumerable<Employee> GetEmployees() => dbContext.Employees;
+    public async Task<IEnumerable<Employee>> GetEmployees()
+    {
+        var collection = database.GetCollection<Employee>("employees");
+
+        return await collection.Find(x => true).ToListAsync();
+    }
+
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Employee>> GetEmployeeById(Guid id)
     {
-        var employee = await dbContext.Employees.FindAsync(id);
+        var collection = database.GetCollection<Employee>("employees");
 
-        if (employee is null) return NotFound();
+        var employee = await collection.Find(x => x.Id == id).SingleOrDefaultAsync();
+
+        if (employee is null)
+            return NotFound();
 
         return employee;
     }

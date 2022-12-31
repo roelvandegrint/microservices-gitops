@@ -4,13 +4,27 @@ services:
   project: public.API/Public.API.csproj
 - name: backend-api
   project: backend.API/Backend.API.csproj
+- name: mongodb-frontend
+  image: mongo:6.0.3
+  bindings:
+  - name: default
+    port: 27017
+    containerPort: 27017
+    protocol: http
+- name: mongodb-backend
+  image: mongo:6.0.3
+  bindings:
+  - name: default
+    port: 27019
+    containerPort: 27017
+    protocol: http
 - name: jaeger
   image: jaegertracing/all-in-one:1.40
   env:
     - name: COLLECTOR_ZIPKIN_HOST_PORT
-      value: 9411
+      value: '9411'
     - name: COLLECTOR_OTLP_ENABLED
-      value: true
+      value: 'true'
   bindings:
     - name: one
       port: 6831

@@ -1,32 +1,35 @@
+using Backend.Api.Models;
 using MassTransit;
 using Microservices.GitOps.MassTransit.Events;
+using MongoDB.Driver;
 
 namespace Backend.Api.Events.Consumers;
 
 public class EmployeeDeletedEventConsumer : IConsumer<EmployeeDeletedEvent>
 {
-    private readonly EmployeeDbContext dbContext;
     private readonly ILogger<EmployeeDeletedEventConsumer> logger;
+    private readonly IMongoCollection<Employee> employeesCollection;
 
-    public EmployeeDeletedEventConsumer(EmployeeDbContext dbContext, ILogger<EmployeeDeletedEventConsumer> logger)
+    public EmployeeDeletedEventConsumer(ILogger<EmployeeDeletedEventConsumer> logger, IMongoDatabase employeesDb)
     {
-        this.dbContext = dbContext;
         this.logger = logger;
+        this.employeesCollection = employeesDb.GetCollection<Employee>("employees");
     }
 
     public async Task Consume(ConsumeContext<EmployeeDeletedEvent> context)
     {
         this.logger.LogInformation("Employee deleted event handler start");
 
-        var employeeToDelete = await dbContext.Employees.FindAsync(context.Message.EmployeeId);
-        if(employeeToDelete is null)
+        var result = await employeesCollection.DeleteOneAsync(
+            new FilterDefinitionBuilder<Employee>().Eq(e => e.Id, context.Message.EmployeeId)
+        );
+        
+        if (result.DeletedCount == 0)
         {
             logger.LogInformation("Employee with ID {id} not found, skipping delete", context.Message.EmployeeId);
             return;
         }
 
-        dbContext.Employees.Remove(employeeToDelete);
-        await dbContext.SaveChangesAsync();
         this.logger.LogInformation("Employee with id {id} deleted", context.Message.EmployeeId);
     }
 }

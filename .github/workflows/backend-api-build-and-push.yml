@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - mongodb
     paths:
       - backend.API/**
 
@@ -14,7 +15,7 @@ on:
 
 env:
   REGISTRY: roelvandegrint.azurecr.io
-  IMAGE_NAME: backend-api
+  IMAGE_NAME: backend-api-mongodb
   DIRECTORY: backend.API
   DOCKERFILE: backend.API/Dockerfile
 
@@ -57,4 +58,4 @@ jobs:
           curl -X POST https://api.github.com/repos/roelvandegrint/microservices-gitops-infrastructure/dispatches \
           -H 'Accept: application/vnd.github.everest-preview+json' \
           -u "${{ secrets.MICROSERVICES_GITOPS_INFRASTRUCTURE_PAT }}" \
-          --data '{ "event_type": "backend-api-updated", "client_payload": { "tag": "${{ github.sha }}" }}'
+          --data '{ "ref": "mongodb" "event_type": "backend-api-updated", "client_payload": { "tag": "${{ github.sha }}" }}'

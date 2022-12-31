@@ -1,6 +1,5 @@
 using Backend.Api.Configuration;
 using Backend.Api.Events.Consumers;
-using Backend.API.Persistence;
 using MassTransit;
 using Microservices.GitOps.MassTransit.Events;
 using OpenTelemetry;
@@ -16,13 +15,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddOptions<DatabaseOptions>().Bind(builder.Configuration.GetSection(nameof(DatabaseOptions)));
-builder.Services.AddDbContext<EmployeeDbContext>();
+builder.Services.AddMongoDb(builder.Configuration);
 
 var massTransitOptions = builder.Configuration.GetSection(nameof(MassTransitOptions)).Get<MassTransitOptions>();
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<EmployeeCreatedEventConsumer>();
+    x.AddConsumer<EmployeeUpdatedEventConsumer>();
     x.AddConsumer<EmployeeDeletedEventConsumer>();
 
     x.UsingAzureServiceBus((context, cfg) =>
@@ -30,13 +29,17 @@ builder.Services.AddMassTransit(x =>
         cfg.Host(massTransitOptions.AzureServiceBusConnectionString);
 
         cfg.Message<EmployeeCreatedEvent>(x => x.SetEntityName("employee-created"));
+        cfg.Message<EmployeeUpdatedEvent>(x => x.SetEntityName("employee-updated"));
         cfg.Message<EmployeeDeletedEvent>(x => x.SetEntityName("employee-deleted"));
 
-        cfg.SubscriptionEndpoint<EmployeeCreatedEvent>("backend-api-employee-created", e =>
+        cfg.SubscriptionEndpoint<EmployeeCreatedEvent>(massTransitOptions.EmployeeCreatedSubscriptionName, e =>
             e.ConfigureConsumer<EmployeeCreatedEventConsumer>(context));
 
-        cfg.SubscriptionEndpoint<EmployeeDeletedEvent>("backend-api-employee-deleted", e =>
-            e.ConfigureConsumer<EmployeeDeletedEventConsumer>(context));
+        cfg.SubscriptionEndpoint<EmployeeUpdatedEvent>(massTransitOptions.EmployeeUpdatedSubscriptionName, e =>
+            e.ConfigureConsumer<EmployeeUpdatedEventConsumer>(context));
+
+        cfg.SubscriptionEndpoint<EmployeeDeletedEvent>(massTransitOptions.EmployeeDeletedSubscriptionName, e =>
+        e.ConfigureConsumer<EmployeeDeletedEventConsumer>(context));
 
         cfg.ConfigureEndpoints(context);
     });
@@ -54,7 +57,8 @@ builder.Services.AddOpenTelemetry()
         .AddAspNetCoreInstrumentation()
         .AddHttpClientInstrumentation()
         .AddSqlClientInstrumentation()
-        .AddOtlpExporter(o => {
+        .AddOtlpExporter(o =>
+        {
             o.Endpoint = new Uri(builder.Configuration.GetValue<string>("Jaeger:GrpcEndpoint"));
             o.Protocol = OpenTelemetry.Exporter.OtlpExportProtocol.Grpc;
         })
