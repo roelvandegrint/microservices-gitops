@@ -22,7 +22,12 @@ public class EmployeesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<Employee>> GetEmployees() => await backendClient.GetEmployeesAsync();
+    public IEnumerable<Employee> GetEmployees() =>
+    {
+        dbcontext.Employees
+        dbContext.Employees;
+    }
+    // await backendClient.GetEmployeesAsync();
 
     [HttpGet("{id}")]
     public async Task<ActionResult<Employee>> GetEmployeeById(Guid id)

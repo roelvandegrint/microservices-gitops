@@ -16,7 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddOptions<DatabaseOptions>().Bind(builder.Configuration.GetSection(nameof(DatabaseOptions)));
+builder.Services.AddOptions<CosmosDbOptions>().Bind(builder.Configuration.GetSection(nameof(CosmosDbOptions)));
 builder.Services.AddDbContext<EmployeeDbContext>();
 
 builder.Services.AddScoped<IBackendClient, BackendClient>();

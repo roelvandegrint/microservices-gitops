@@ -5,11 +5,11 @@ using Public.API.Persistence;
 
 public class EmployeeDbContext : DbContext
 {
-    private readonly string connectionString;
+    private readonly CosmosDbOptions cosmosDbOptions;
 
-    public EmployeeDbContext(IOptions<DatabaseOptions> databaseOptions)
+    public EmployeeDbContext(IOptions<CosmosDbOptions> cosmosDbOptions)
     {
-        connectionString = databaseOptions.Value.ConnectionString;
+        this.cosmosDbOptions = cosmosDbOptions.Value;
     }
 
     public DbSet<Employee> Employees { get; set; } = null!;
@@ -17,5 +17,17 @@ public class EmployeeDbContext : DbContext
     // The following configures EF to create a Sqlite database file in the
     // special "local" folder for your platform.
     protected override void OnConfiguring(DbContextOptionsBuilder options)
-        => options.UseSqlServer(connectionString);
+        => options.UseCosmos(
+            cosmosDbOptions.AccountEndpoint,
+            cosmosDbOptions.AccountKey,
+            cosmosDbOptions.DatabaseName
+        );
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.HasDefaultContainer("employees");
+        modelBuilder.Entity<Employee>().HasPartitionKey(e => e.Id);
+    }
 }

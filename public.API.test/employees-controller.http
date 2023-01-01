@@ -1,5 +1,5 @@
-@domain = cf.local
-@port = 80
+@domain = localhost
+@port = 5094
 
 GET http://{{domain}}:{{port}}/employees HTTP/1.1
 
