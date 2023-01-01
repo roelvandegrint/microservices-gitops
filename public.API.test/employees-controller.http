@@ -1,10 +1,11 @@
 @domain = localhost
-@port = 41179
+@port = 32977
+@id = d357c58c-3026-4ee3-855f-5ceb03c2984d
 
 GET http://{{domain}}:{{port}}/employees HTTP/1.1
 
 ###
-GET http://{{domain}}:{{port}}/employees/576d8651-6321-4b57-a695-daa76fd879d8 HTTP/1.1
+GET http://{{domain}}:{{port}}/employees/{{id}} HTTP/1.1
 
 ###
 POST http://{{domain}}:{{port}}/employees HTTP/1.1
@@ -17,14 +18,13 @@ Content-Type: application/json
 }
 
 ###
-PUT http://{{domain}}:{{port}}/employees/51d654e0-7174-407e-a169-5a73c2f952c4 HTTP/1.1
+PUT http://{{domain}}:{{port}}/employees/{{id}} HTTP/1.1
 Content-Type: application/json
 
 {
-    "firstName": "Fennieboy",
-    "prefix": "van de",
-    "lastName": "Grint"
+    "firstName": "Mandy",
+    "lastName": "Dirkse"
 }
 
 ###
-DELETE http://{{domain}}:{{port}}/employees/e94d9463-1748-420d-b1ec-53a2c0367933 HTTP/1.1
+DELETE http://{{domain}}:{{port}}/employees/{{id}} HTTP/1.1
